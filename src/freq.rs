@@ -3,26 +3,19 @@ use std::collections::HashMap;
 use std::string::ToString;
 use regex::Regex;
 
-type FreqMap = HashMap<char, u32>;
+pub type FreqMap = HashMap<char, u32>;
 
-struct FreqGetter {
-    filter_fn: Option<Box<dyn Fn(char) -> bool>>,
+pub struct FreqGetter {
     filter_regex: Option<Regex>,
     filter_set: Option<HashSet<char>>
 }
 
 impl FreqGetter {
-    fn new() -> Self {
+    pub fn new() -> Self {
         FreqGetter {
-            filter_fn: None,
             filter_regex: None,
             filter_set: None,
         }
-    }
-
-    pub fn filter_fn(mut self, fun: impl Fn(char) -> bool + 'static) -> Self {
-        self.filter_fn = Some(Box::new(fun));
-        self
     }
 
     pub fn filter_regex(mut self, regex: Regex) -> Self {
@@ -36,12 +29,10 @@ impl FreqGetter {
     }
 
     fn filter_char(&self, c: char) -> bool {
-        match (&self.filter_fn,
-               &self.filter_regex,
+        match (&self.filter_regex,
                &self.filter_set) {
-            (Some(fun), ..) => fun(c),
-            (None, Some(regex), ..) => regex.find(&c.to_string()).is_some(),
-            (None, None, Some(set)) => set.contains(&c),
+            (Some(regex), ..) => regex.find(&c.to_string()).is_some(),
+            (None, Some(set)) => set.contains(&c),
             _ => true,
         }
     }
@@ -61,7 +52,7 @@ impl FreqGetter {
     }
 }
 
-fn get_freq(input: &str) -> FreqMap {
+pub fn get_freq(input: &str) -> FreqMap {
     let getter = FreqGetter::new();
     getter.get(input)
 }
@@ -74,22 +65,6 @@ fn test_get_freq() {
     assert_eq!(freq.get(&'r'), Some(&4));
     assert_eq!(freq.get(&'q'), Some(&7));
     assert_eq!(freq.get(&'w'), Some(&1));
-}
-
-#[test]
-fn test_filter_fn() {
-    let input = "araarrrqqqwqyyyyyqqq   ";
-
-    let freq =
-        FreqGetter::new()
-        .filter_fn(|c| c != ' ')
-        .get(&input);
-
-    assert_eq!(freq.get(&'a'), Some(&3));
-    assert_eq!(freq.get(&'r'), Some(&4));
-    assert_eq!(freq.get(&'q'), Some(&7));
-    assert_eq!(freq.get(&'w'), Some(&1));
-    assert_eq!(freq.get(&' '), None);
 }
 
 #[test]
@@ -126,4 +101,19 @@ fn test_filter_regex() {
     assert_eq!(freq.get(&'q'), Some(&7));
     assert_eq!(freq.get(&'w'), Some(&1));
     assert_eq!(freq.get(&' '), None);
+}
+
+
+#[cfg(test)]
+use glob::glob;
+
+#[test]
+fn test_glob() {
+    let g = glob("/home/igarin/workspace/sym-or-num/src/*.rs").unwrap();
+    for entry in g {
+        match entry {
+            Ok(entry) => { dbg!(entry.display()); },
+            Err(e) => { dbg!(e); },
+        }
+    }
 }
