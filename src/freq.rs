@@ -5,6 +5,17 @@ use regex::Regex;
 
 pub type FreqMap = HashMap<char, u32>;
 
+fn inc_freq_map_entry(map: &mut FreqMap, key: char, inc: u32) {
+    let curr = map.get(&key).unwrap_or(&0).clone();
+    map.insert(key, curr + inc);
+}
+
+pub fn merge_freq_maps(dst: &mut FreqMap, src: &FreqMap) {
+    for (key, value) in src.iter() {
+        inc_freq_map_entry(dst, *key, *value)
+    }
+}
+
 pub struct FreqGetter {
     filter_regex: Option<Regex>,
     filter_set: Option<HashSet<char>>
@@ -103,17 +114,17 @@ fn test_filter_regex() {
     assert_eq!(freq.get(&' '), None);
 }
 
-
-#[cfg(test)]
-use glob::glob;
-
 #[test]
-fn test_glob() {
-    let g = glob("/home/igarin/workspace/sym-or-num/src/*.rs").unwrap();
-    for entry in g {
-        match entry {
-            Ok(entry) => { dbg!(entry.display()); },
-            Err(e) => { dbg!(e); },
-        }
-    }
+fn test_merge() {
+    let input1 = "araarrrqqqwqyyyyyqqq";
+    let input2 = "uuuuuuuuuuuuuuuuuuuuuuuqqq";
+    let mut freq1 = get_freq(&input1);
+    let freq2 = get_freq(&input2);
+    merge_freq_maps(&mut freq1, &freq2);
+
+    assert_eq!(freq1.get(&'a'), Some(&3));
+    assert_eq!(freq1.get(&'r'), Some(&4));
+    assert_eq!(freq1.get(&'q'), Some(&10));
+    assert_eq!(freq1.get(&'w'), Some(&1));
+    assert_eq!(freq1.get(&'u'), Some(&23));
 }

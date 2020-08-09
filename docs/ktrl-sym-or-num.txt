@@ -1,0 +1,31 @@
+/home/igarin/workspace/ktrl/src/cfg.rs
+/home/igarin/workspace/ktrl/src/ipc.rs
+/home/igarin/workspace/ktrl/src/kbd_in.rs
+/home/igarin/workspace/ktrl/src/kbd_out.rs
+/home/igarin/workspace/ktrl/src/keys.rs
+/home/igarin/workspace/ktrl/src/ktrl.rs
+/home/igarin/workspace/ktrl/src/layers.rs
+/home/igarin/workspace/ktrl/src/main.rs
+
+-------------- RESULT --------------
+
+_: 2264
+(: 1376
+): 1376
+=: 1299
+-: 601
+1: 573
+2: 550
+3: 499
+4: 389
+7: 331
+5: 325
+0: 286
+6: 283
+8: 226
+9: 215
+&: 103
+!: 100
+#: 42
+*: 14
+@: 1
